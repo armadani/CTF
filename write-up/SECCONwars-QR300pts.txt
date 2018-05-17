@@ -1,0 +1,68 @@
+challenge nya seperti ini.
+
+--------------------------
+http://youtu.be/1pC56S17-_A
+
+# Not need Japanese text to solve this task.
+# If you need it ? see below 🙂
+http://pastebin.com/uXByBZv5
+------------------------------------#
+
+jika kita buka youtube nya maka akan mengeluarkan text jepang dan logo SECCON dalam durasi 00:01:20, 
+dan tidak menghasilkan apa apa ketika kita lihat keseluruhannya. tapi memang ada 1 image QR yang ketimpah oleh logo SECCON itu.
+
+how to fix it?
+
+Pertama install dulu dependencies
+$ sudo apt-get install libopencv-dev
+
+simpan file ini dengan code.cpp dan letaknya sama dengan video nya
+CPP|+|+| --------------------------------------------------
+
+#include <opencv.hpp>
+#include <iostream>
+int main (int argc, char* argv[]) {
+    cv::VideoCapture input(argv[1]);
+    input.set(CV_CAP_PROP_POS_MSEC, 50000);
+    
+    cv::Mat frame;
+    cv::Mat output;
+    for (;;) {
+        if (!input.read(frame)) {
+            std::cout << "> End of File" << std::endl;
+            break;
+        }
+        cv::Mat slice = frame(cv::Rect(cv::Point(0, 238), cv::Point(frame.cols,frame.rows)));
+        output.push_back(slice);
+        cv::imshow("SECON 2014", slice );
+        cv::imshow("SECON 2014 - Output", output );
+        if (char(cv::waitKey(50)) == 'q') {
+            std::cout << "> User Quit" << std::endl;
+            return EXIT_SUCCESS;
+        }
+    }
+    cv::imwrite("output.png", output);
+    return EXIT_SUCCESS;
+}
+
+----------------------------------------------------------------
+
+Setelah itu kita compile
+$ g++ code.cpp -I/usr/include/opencv2 -lopencv_core -lopencv_highgui
+ 
+$ ./a.out video.mp4
+
+lalu otomatis akan keluar QR nya, nah tapi ini QR nya warna kuning. jadi kita harus ubah ke black & white dahulu 
+setelah itu baru kita scan QR nya.
+
+Trouble :
+nah setelah saya Scan QR nya tidak ada muncul Flag nya, sampai" saya berfikir ini code nya apa udah di blokir apa gimana..?
+sekian lama saya keliling scan online dan tetap gk bisa juga. saya mulai coba teliti melihat QR nya dan saya menemukan masalahnya.
+coba lihat image yang saya ubah ke black & white -> http://bit.ly/2k78wOp dan bedakan dengan QR yang lainnya -> http://bit.ly/2KvY0LC .
+jika kita teliti maka kita akan melihat perbedaannya. setelah itu kita manipulasi QR nya dengan Fhoto editor kita.
+done : http://bit.ly/2rOhcgA
+lalu scan flag nya : SECCON{M4Y 7H3 F0RC3 83 W17H U}.
+
+sumber : http://bit.ly/2IusRYb
+
+Thanks,
